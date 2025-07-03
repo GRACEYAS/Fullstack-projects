@@ -1,1 +1,209 @@
 
+Creating database named "ecommerce"
+
+# CREATE DATABASE ecommerce
+
+Creating Tables
+ 1.creating customers table and values
+CREATE TABLE Customers (
+ id PRIMARY INTEGER KEY AUTO_INCREMENT,
+ Name text,
+ Email text,
+ address text
+);
+
+Inserting values in customers Table 
+
+INSERT INTO Customers VALUE (1, "Graceyas", "graceyasgracy@gmail.com", "no.93/207, kadambattur main road, chegalpattu");
+INSERT INTO Customers VALUE (2, "Nithiya",  "nithu00736789@gmail.com", "no.9/209, kAZHIPATTUR main road, OMR");
+INSERT INTO Customers VALUE (3, "lithi",    "lithishiya2307@gmail.com", "no.23, Thazhambur main road, Navalur");
+INSERT INTO Customers VALUE (4, "darrius", "darrius@gmail.com", "no.963/207, katangulathur main road, chennai");
+
+INSERT INTO Customers VALUE (2, "Nithiya",  "nithu00736789@gmail.com", "no.9/209, kadambattur main road, OMR");
+
+2.Creating ORDER tables and inserting values
+
+CREATE TABLE Order (
+   id PRIMARY INTERGER KEY AUTO_INCREMENT
+   customer_id INTEGER
+   Order_date DATE
+   Total_Amount INTEGER
+);
+
+INSERT INTO Order VALUES (1, 1, "1.04.2024", 458)
+INSERT INTO Order VALUES (2, 1, "3.04.2024", 458)
+INSERT INTO Order VALUES (3, 2, "7.04.2024", 458)
+INSERT INTO Order VALUES (4, 1, "28.04.2024", 458)
+INSERT INTO Order VALUES (5, 4, "22.04.2024", 458)
+INSERT INTO Order VALUES (6, 2, "18.04.2024", 458)
+INSERT INTO Order VALUES (7, 3, "12.04.2024", 458)
+INSERT INTO Order VALUES (8, 3, "25.04.2024", 458)
+INSERT INTO Order VALUES (9, 4, "23.04.2024", 458)
+
+3.Creating tables for product and Inserting values
+
+CREATE TABLE Products (
+   id PRIMARY INTERGER KEY AUTO_INCREMENT
+   Product_Name TEXT,
+   Product_Price INTEGER,
+   Description TEXT,
+   
+);
+
+INSERT INTO Products VALUES(1, "Denim jeans", 1000, "Torn jeans from Derby jeans");
+INSERT INTO Products VALUES(2, "Nike white sneakers", 3499, "Elite shoes from Nike");
+INSERT INTO Products VALUES(3, "Linen shirt", 899, "Best wear for summer LINEN" );
+INSERT INTO Products VALUES(4, "Sunglass", 1399, "coolers from ray-ban");
+INSERT INTO Products VALUES(5, "Facewash", 349, "Minimalist facewash for oily skin");
+INSERT INTO Products VALUES(5, "TSHIRT", 459, "Puma tshirt for sports players and athletes");
+
+
+4.Creating order items able and inserting values
+
+CREATE TABLE OrderItems (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  order_id INTEGER,
+  product_id INTEGER
+);
+
+INSERT INTO OrderItems VALUES (1, 1, 1);  
+INSERT INTO OrderItems VALUES (2, 2, 2);
+INSERT INTO OrderItems VALUES (3, 3, 1);  
+INSERT INTO OrderItems VALUES (4, 4, 4);
+INSERT INTO OrderItems VALUES (5, 5, 1);
+
+
+QUERIES;
+
+1.Retrieve all customers who have placed an order in the last 30 days.
+
+We have order placed data in Order table, so therefore we need to write the quries in order table to get the 30 days order details, we need to check from current date to last 30 days.
+
+SELECT DISTINCT customer_id
+FROM Orders
+WHERE order_date >= CURDATE() - INTERVAL 30 DAY;
+
+
+2.Get the total amount of all orders placed by each customer.
+
+First we need to combine customer and order tables by Left join group by customer name we will get it.
+
+SELECT Customers.name, SUM(Orders.total_amount) FROM Orders
+LEFT JOIN Customers ON Orders.customer_id = Customers.id
+GROUP BY Customers.name;
+
+3.Update the price of Product C to 45.00.
+
+let me consider 3 as c and update the product price to 45 by using update quries
+
+UPDATE TABLE Products
+SET Product_price(45)
+WHERE id = 3;
+
+4.Add a new column discount to the products table.
+
+By using alter method we can create new column in product table.
+
+ALTER TABLE Product
+ADD Discount INTEGER
+DEFAULT 20%;
+
+
+5.Retrieve the top 3 products with the highest price.
+
+In Product table we need to select product name and price order by descending and if we set limit as 3 we'll get top 3 highest price details 
+
+SELECT Product_Name, Product_Price FROM Products
+ORDER BY Product_Price DESC
+LIMIT 3;
+
+6.Get the names of customers who have ordered Product A.
+
+SELECT name, Product_price FROM Customers
+JOIN Orders 
+ON Customers.id = Orders.customer_id
+WHERE Orders.id IN (1, 2);
+
+
+7.Get the names of customers who have ordered Product A.
+
+Will consider product 1 as A and and write he query in Order table
+
+
+SELECT Customers.name, SUM(Orders.total_amount)
+FROM Orders
+LEFT JOIN Customers ON Orders.customer_id = Customers.id
+GROUP BY Customers.name;
+
+8.Join the orders and customers tables to retrieve the customer's name and order date for each order. 
+
+SELECT Customers.Name, Orders.Order_date
+FROM Orders
+JOIN Customers ON Orders.customer_id = Customers.id;
+
+
+
+9.Retrieve the orders with a total amount greater than 150.00.
+
+
+SELECT * 
+FROM Orders
+WHERE Total_Amount > 150;
+
+10.Normalize the database by creating a separate table for order items and updating the orders table to reference the order_items table.
+
+first step
+
+CREATE TABLE Orders (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  customer_id INTEGER,
+  order_date DATE,
+  total_amount INTEGER
+);
+
+second step
+
+CREATE TABLE OrderItems (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  order_id INTEGER,
+  product_id INTEGER,
+  quantity INTEGER DEFAULT 1
+);
+
+third step
+
+INSERT INTO OrderItems (order_id, product_id, quantity) VALUES (1, 1, 1);
+INSERT INTO OrderItems (order_id, product_id, quantity) VALUES (2, 2, 1);
+INSERT INTO OrderItems (order_id, product_id, quantity) VALUES (3, 1, 2);
+INSERT INTO OrderItems (order_id, product_id, quantity) VALUES (4, 4, 1);
+INSERT INTO OrderItems (order_id, product_id, quantity) VALUES (5, 1, 1);
+
+
+
+11.Retrieve the average total of all orders.
+
+SELECT AVG(total_amount) AS average_order_total
+FROM Orders;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
